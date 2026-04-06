@@ -279,7 +279,7 @@ class PixelStreamBenchmark {
   }
 }
 
-const BENCHMARK_WIDTH = 1000;  // 1000 * 1000 = 1M pixel
+const BENCHMARK_WIDTH = 1000;  // 1000 * 1000 = 1 000 000  pixels
 const BENCHMARK_HEIGHT = 1000;
 
 const benchmark = new PixelStreamBenchmark(BENCHMARK_WIDTH, BENCHMARK_HEIGHT);
