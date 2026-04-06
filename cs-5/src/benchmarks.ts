@@ -46,7 +46,7 @@ class PixelStreamBenchmark {
         const duration = this.measureTime(() => {
             for (let y = 0; y < this.height; y++) {
                 for (let x = 0; x < this.width; x++) {
-                    const pixel = stream.getPixel(x, y);
+                    stream.getPixel(x, y);
                     pixelsRead++;
                 }
             }
@@ -93,7 +93,7 @@ class PixelStreamBenchmark {
 
         let iterations = 0;
         const duration = this.measureTime(() => {
-            stream.forEach(TraverseMode.RowMajor, (rgba, x, y) => {
+            stream.forEach(TraverseMode.RowMajor, () => {
                 iterations++;
             });
         });
