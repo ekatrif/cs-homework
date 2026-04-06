@@ -15,6 +15,14 @@ export default tseslint.config(
   },
   {
     rules: {
+      'indent': ['error', 2],
+      'max-len': ['error', { code: 100, ignoreComments: true, ignoreStrings: true }],
+      'quotes': ['error', 'single'],
+      'semi': ['error', 'always'],
+      'comma-dangle': ['error', 'always-multiline'],
+      'space-before-function-paren': ['error', 'never'],
+      'space-infix-ops': 'error',
+      'keyword-spacing': ['error', { before: true, after: true }],
       'semi': ['error', 'always'],
       '@typescript-eslint/no-unused-vars': 'error',
       '@typescript-eslint/no-explicit-any': 'warn',
@@ -25,6 +33,6 @@ export default tseslint.config(
     ...tseslint.configs.disableTypeChecked,
   },
   {
-    ignores: ['dist', 'node_modules', '**/*.config.*'],
+    ignores: ['dist', 'node_modules', '**/*.config.js', '**/*.config.ts'],
   },
 );

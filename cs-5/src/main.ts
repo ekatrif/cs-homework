@@ -12,46 +12,46 @@ interface PixelStream {
 }
 
 export class FlatArrayStream implements PixelStream {
-    private data: number[];
-    private width: number;
-    private height: number;
+  private data: number[];
+  private width: number;
+  private height: number;
 
-    constructor(width: number, height: number) {
-        this.width = width;
-        this.height = height;
-        const size = width * height * 4;
+  constructor(width: number, height: number) {
+    this.width = width;
+    this.height = height;
+    const size = width * height * 4;
         
-        this.data = new Array(size).fill(0);
-    }
+    this.data = new Array(size).fill(0);
+  }
 
-    getPixel(x: number, y: number): RGBA {
-        const idx = (y * this.width + x) * 4;
-        return [this.data[idx], this.data[idx + 1], this.data[idx + 2], this.data[idx + 3]];
-    }
+  getPixel(x: number, y: number): RGBA {
+    const idx = (y * this.width + x) * 4;
+    return [this.data[idx], this.data[idx + 1], this.data[idx + 2], this.data[idx + 3]];
+  }
 
-    setPixel(x: number, y: number, rgba: RGBA): RGBA {
-        const idx = (y * this.width + x) * 4;
-        const pixelColor = this.getPixel(x, y);
-        this.data[idx] = rgba[0];
-        this.data[idx + 1] = rgba[1];
-        this.data[idx + 2] = rgba[2];
-        this.data[idx + 3] = rgba[3];
-        return pixelColor;
-    }
+  setPixel(x: number, y: number, rgba: RGBA): RGBA {
+    const idx = (y * this.width + x) * 4;
+    const pixelColor = this.getPixel(x, y);
+    this.data[idx] = rgba[0];
+    this.data[idx + 1] = rgba[1];
+    this.data[idx + 2] = rgba[2];
+    this.data[idx + 3] = rgba[3];
+    return pixelColor;
+  }
 
-    forEach(mode: TraverseMode, callback: (rgba: RGBA, x: number, y: number) => void): void {
-        if (mode === TraverseMode.RowMajor) {
-            for (let y = 0; y < this.height; y++) {
-                for (let x = 0; x < this.width; x++) {
-                    callback(this.getPixel(x, y), x, y);
-                }
-                 }
-        } else {
-            for (let x = 0; x < this.width; x++) {
-                for (let y = 0; y < this.height; y++) {
-                    callback(this.getPixel(x, y), x, y);
-                }
-            }
+  forEach(mode: TraverseMode, callback: (rgba: RGBA, x: number, y: number) => void): void {
+    if (mode === TraverseMode.RowMajor) {
+      for (let y = 0; y < this.height; y++) {
+        for (let x = 0; x < this.width; x++) {
+          callback(this.getPixel(x, y), x, y);
         }
+      }
+    } else {
+      for (let x = 0; x < this.width; x++) {
+        for (let y = 0; y < this.height; y++) {
+          callback(this.getPixel(x, y), x, y);
+        }
+      }
     }
+  }
 }
