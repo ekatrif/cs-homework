@@ -259,13 +259,19 @@ benchmarkGetAndSetAlternatingColMajor(): BenchmarkResult {
         console.log('\n=== COMPARISONS ===');
         const rowMajor = results[2];
         const colMajor = results[3];
-        const ratio = rowMajor.durationMs / colMajor.durationMs;
-        console.log(`RowMajor vs ColMajor: ${ratio.toFixed(2)}x ${ratio > 1 ? 'slower' : 'faster'}`);
+
+        const rowMajorDuration = rowMajor.durationMs;
+        const colMajorDuration = colMajor.durationMs;
+        const ratio = rowMajorDuration > colMajorDuration ? rowMajorDuration / colMajorDuration : colMajorDuration /rowMajorDuration;
+        console.log(`RowMajor vs ColMajor: ${ratio.toFixed(2)}x ${rowMajorDuration > colMajorDuration ? 'slower' : 'faster'}`);
         
         const rowMajorWithSet = results[4];
         const colMajorWithSet = results[5];
-        const setRatio = rowMajorWithSet.durationMs / colMajorWithSet.durationMs;
-        console.log(`RowMajor+setPixel vs ColMajor+setPixel: ${setRatio.toFixed(2)}x ${setRatio > 1 ? 'slower' : 'faster'}`);
+
+        const rowMajorWithSetDuration = rowMajorWithSet.durationMs;
+        const colMajorWithSetDuration = colMajorWithSet.durationMs;
+        const setRatio = rowMajorWithSetDuration > colMajorWithSetDuration ? rowMajorWithSetDuration/colMajorWithSetDuration : colMajorWithSetDuration / rowMajorWithSetDuration;
+        console.log(`RowMajor+setPixel vs ColMajor+setPixel: ${setRatio.toFixed(2)}x ${rowMajorWithSetDuration > colMajorWithSetDuration ? 'slower' : 'faster'}`);
     }
 }
 

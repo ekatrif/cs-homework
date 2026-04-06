@@ -45,7 +45,7 @@ export class FlatArrayStream implements PixelStream {
                 for (let x = 0; x < this.width; x++) {
                     callback(this.getPixel(x, y), x, y);
                 }
-            }
+                 }
         } else {
             for (let x = 0; x < this.width; x++) {
                 for (let y = 0; y < this.height; y++) {
