@@ -3,14 +3,21 @@
   "type": "module",
   "scripts": {
     "build": "vite build",
-    "dev": "vite build --watch"
+    "dev": "vite build --watch",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "main": "./dist/main.js",
   "bin": {
     "benchmarks": "./dist/benchmarks.js"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@typescript-eslint/eslint-plugin": "^8.58.0",
+    "@typescript-eslint/parser": "^8.58.0",
+    "eslint": "^10.2.0",
     "typescript": "^5.0.0",
+    "typescript-eslint": "^8.58.0",
     "vite": "^5.0.0"
   }
 }
