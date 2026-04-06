@@ -1,4 +1,4 @@
-type RGBA = [red: number, green: number, blue: number, alpha: number];
+export type RGBA = [red: number, green: number, blue: number, alpha: number];
 
 export enum TraverseMode {
   RowMajor,
