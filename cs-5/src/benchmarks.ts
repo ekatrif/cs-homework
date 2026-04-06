@@ -236,8 +236,8 @@ class PixelStreamBenchmark {
   // Run all benchmarks
   runAll(): void {
     console.log('\n========================================');
-    console.log('PIXEL STREAM BENCHMARK');
-    console.log(`Resolution: ${this.width}x${this.height}`);
+    console.log('FlatArrayStream BENCHMARK');
+    console.log(`Size: ${this.width}x${this.height} pixels`);
     console.log(`Total pixels: ${this.totalPixels.toLocaleString()}`);
     console.log(`Total RGBA values: ${(this.totalPixels * 4).toLocaleString()}`);
     console.log('========================================\n');
@@ -275,7 +275,17 @@ class PixelStreamBenchmark {
     const setRatio = rowMajorWithSetDuration > colMajorWithSetDuration
       ? rowMajorWithSetDuration / colMajorWithSetDuration
       : colMajorWithSetDuration / rowMajorWithSetDuration;
-    console.log(`RowMajor+setPixel vs ColMajor+setPixel: ${setRatio.toFixed(2)}x ${rowMajorWithSetDuration > colMajorWithSetDuration ? 'slower' : 'faster'}`);
+    console.log(`RowMajor + setPixel vs ColMajor + setPixel: ${setRatio.toFixed(2)}x ${rowMajorWithSetDuration > colMajorWithSetDuration ? 'slower' : 'faster'}`);
+
+    const rowMajorWithGetSet = results[6];
+    const colMajorWithGetSet = results[7];
+
+    const rowMajorWithGetSetDuration = rowMajorWithGetSet.durationMs;
+    const colMajorWithGetSetDuration = colMajorWithGetSet.durationMs;
+    const getSetRatio = rowMajorWithGetSetDuration > colMajorWithGetSetDuration
+      ? rowMajorWithGetSetDuration / colMajorWithGetSetDuration
+      : colMajorWithGetSetDuration / rowMajorWithGetSetDuration;
+    console.log(`RowMajor + getPixel + setPixel vs ColMajor + getPixel + setPixel: ${getSetRatio.toFixed(2)}x ${rowMajorWithGetSetDuration > colMajorWithGetSetDuration ? 'slower' : 'faster'}`);
   }
 }
 
