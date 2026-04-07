@@ -11,6 +11,13 @@ export interface PixelStream {
     forEach(mode: TraverseMode, callback: (rgba: RGBA, x: number, y: number) => void): void;
 }
 
+interface RGBObject {
+  r: number;
+  g: number;
+  b: number;
+  a: number;
+}
+
 export class FlatArrayStream implements PixelStream {
   private data: number[];
   private width: number;
@@ -97,13 +104,6 @@ export class ArrayOfArraysStream implements PixelStream {
       }
     }
   }
-}
-
-interface RGBObject {
-  r: number;
-  g: number;
-  b: number;
-  a: number;
 }
 
 export class ArrayOfObjectsStream implements PixelStream {
