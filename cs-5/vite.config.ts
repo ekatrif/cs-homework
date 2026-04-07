@@ -5,7 +5,7 @@ export default defineConfig({
   build: {
     lib: {
       entry: {
-        main: resolve(__dirname, 'src/main.ts'),
+        main: resolve(__dirname, 'src/class.ts'),
         benchmarks: resolve(__dirname, 'src/benchmarks.ts'),
       },
       formats: ['es'],
