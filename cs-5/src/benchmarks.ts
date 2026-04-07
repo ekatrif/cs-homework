@@ -74,13 +74,6 @@ class PixelStreamBenchmark {
     }
   }
 
-  // Create a fresh stream for each test to avoid interference
-  private createStream(implName: string): PixelStream {
-    const Constructor = this.implementations.get(implName);
-    if (!Constructor) throw new Error(`Unknown implementation: ${implName}`);
-    return new Constructor(this.width, this.height);
-  }
-
   // Initialize stream with test data
   private initializeStream(stream: PixelStream): void {
     for (let i = 0; i < this.totalPixels; i++) {
