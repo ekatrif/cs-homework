@@ -5,7 +5,7 @@ export enum TraverseMode {
   ColMajor
 }
 
-interface PixelStream {
+export interface PixelStream {
     getPixel(x: number, y: number): RGBA;
     setPixel(x: number, y: number, rgba: RGBA): RGBA;
     forEach(mode: TraverseMode, callback: (rgba: RGBA, x: number, y: number) => void): void;
