@@ -2,7 +2,7 @@ const size = [100, 1000, 10000, 100000];
 
 const n = 100000;
 
-const WARMUP_ITERATIONS = 1000; // количество итераций прогрева
+const WARMUP_ITERATIONS = 100000; // количество итераций прогрева
 
 const createHoleyArray = (length) => new Array(length) // с дырками
 const createRegularArray = (length) => new Array(length).fill(0) // без дырок
