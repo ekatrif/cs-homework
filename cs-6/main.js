@@ -7,58 +7,43 @@ const WARMUP_ITERATIONS = 100000; // количество итераций пр�
 const createHoleyArray = (length) => new Array(length) // с дырками
 const createRegularArray = (length) => new Array(length).fill(0) // без дырок
 
-const measureTime = (operation, array) => {
-    const start = performance.now();
-    operation(array);
-    const end = performance.now();
-    return end - start;
-}
-
 const logResults = (name, size, method, time) => {
   console.log(`${name} (${size}) for ${method}: ${time}`);
 }
 
 const getMethodName = (method) => method.toString().replace(/\(array\) => array\./g, '');
 
-const push = (array) => array.push();
+const push = (array) => array.push(0);
 const pop = (array) => array.pop();
 const shift = (array) => array.shift();
-const unshift = (array) => array.unshift();
+const unshift = (array) => array.unshift(0);
 const methods = [push, pop, shift, unshift];
 
-const warmupJIT = (type, size, method) => {
-    const warmupArray = type === 'Holey' 
-        ? createHoleyArray(size) 
-        : createRegularArray(size);
-    
-    for (let i = 0; i < WARMUP_ITERATIONS; i ++) {
-        if (method === push) {
-            warmupArray.push(i);
-            warmupArray.pop();
-        } else if (method === unshift) {
-            warmupArray.unshift(i);
-            warmupArray.shift();
-        } else {
-            method(warmupArray);
-            if (method === shift) {
-                warmupArray.unshift(0);
-            } else if (method === pop) {
-                warmupArray.push(0);
-            }
-        }
-    }
-}
-
 const checkArray = (type, size, method) => {
-  warmupJIT(type, size, method);
-  
   const array = type === 'Holey' ? createHoleyArray(size) : createRegularArray(size);
-
-  let time = 0;
-
-  for (let i = 0; i < n; i ++) {
-    time += measureTime(method, array);
+  
+  for (let i = 0; i < WARMUP_ITERATIONS; i++) {
+    method(array);
   }
+  
+  // Restore initial state
+  if (type === 'Holey') {
+    array.length = 0;
+    array.length = size;
+  } else {
+    array.length = 0;
+    array.length = size;
+    for (let i = 0; i < size; i++) 
+      array[i] = 0;
+    }
+  
+  // Measure time
+  const start = performance.now();
+  for (let i = 0; i < n; i++) {
+    method(array);
+  }
+  const end = performance.now();
+  const time = end - start;
 
   const methodName = getMethodName(method);
 
