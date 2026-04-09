@@ -38,6 +38,7 @@ const checkArray = (type, size, method) => {
   
   // Restore initial state
   if (type === 'Holey') {
+    array.length = 0;
     array.length = size;
     for (let i = 0; i < size; i++) {
       // Random array filling
