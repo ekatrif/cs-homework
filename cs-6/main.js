@@ -32,25 +32,25 @@ const methods = [push, pop, shift, unshift];
 const checkArray = (type, size, method) => {
   const array = type === 'Holey' ? createHoleyArray(size) : createRegularArray(size);
   
-  // for (let i = 0; i < WARMUP_ITERATIONS; i++) {
-  //   method(array);
-  // }
+  for (let i = 0; i < WARMUP_ITERATIONS; i++) {
+    method(array);
+  }
   
-  // // Restore initial state
-  // if (type === 'Holey') {
-  //   array.length = 0;
-  //   array.length = size;
-  //   for (let i = 0; i < size; i++) {
-  //     // Random array filling
-  //     const random = Math.random() < 0.5 ? 0 : 1;  
-  //     if (random) {
-  //       array[i] = 0;
-  //     }
-  //   }
-  // } else {
-  //   array.splice(size);
-  //   array.fill(0);
-  // }
+  // Restore initial state
+  if (type === 'Holey') {
+    array.length = 0;
+    array.length = size;
+    for (let i = 0; i < size; i++) {
+      // Random array filling
+      const random = Math.random() < 0.5 ? 0 : 1;  
+      if (random) {
+        array[i] = 0;
+      }
+    }
+  } else {
+    array.splice(size);
+    array.fill(0);
+  }
   
   // Measure time
   const start = performance.now();
