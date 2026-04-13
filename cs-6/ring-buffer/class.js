@@ -20,7 +20,7 @@ export class RingBuffer {
 
   shift() {
     if (this.size === 0) {
-      
+      throw new Error('Массив пуст.')
     }
     const element = this.buffer[this.head];
     this.buffer[this.head] = undefined;
