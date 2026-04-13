@@ -7,21 +7,15 @@ export class RingBuffer {
   }
 
   unshift(element) {
-    if (this.size === this.capacity) {
-      // Перенос tail при переполнении
-      this.head = (this.head - 1 + this.capacity) % this.capacity;
-      this.buffer[this.head] = element;
-      return;
-    }
     this.head = (this.head - 1 + this.capacity) % this.capacity;
     this.buffer[this.head] = element;
-    this.size++;
+
+    if (this.size < this.capacity) {
+      this.size++;
+    }
   }
 
   shift() {
-    if (this.size === 0) {
-      throw new Error('Массив пуст.')
-    }
     const element = this.buffer[this.head];
     this.buffer[this.head] = undefined;
     this.head = (this.head + 1) % this.capacity;
