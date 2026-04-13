@@ -16,6 +16,9 @@ export class RingBuffer {
   }
 
   shift() {
+    if (this.size === 0) {
+			return undefined
+		}
     const element = this.buffer[this.head];
     this.buffer[this.head] = undefined;
     this.head = (this.head + 1) % this.capacity;
