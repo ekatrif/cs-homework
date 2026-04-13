@@ -1,27 +1,25 @@
 import { RingBuffer } from './class.js';
 
-const measureTime = (fn, runs = 1) => {
+const measureTime = (fn) => {
   const start = performance.now();
-  for (let i = 0; i < runs; i++) {
-    fn();
-  }
+  fn();
   const end = performance.now();
-  return (end - start) / runs;
+  return (end - start);
 }
 
-const benchmarkUnshift = (n, runs = 10) => {
+const benchmarkUnshift = (n) => {
 const buffer = new RingBuffer(n + 1);
   
   const time = measureTime(() => {
     for (let i = 0; i < n; i++) {
       buffer.unshift(i);
     }
-  }, runs);
+  });
   
   return time;
 }
 
-const benchmarkShift = (n, runs = 10) => {
+const benchmarkShift = (n) => {
   const buffer = new RingBuffer(n + 1);
   for (let i = 0; i < n; i++) {
     buffer.unshift(i);
@@ -31,20 +29,19 @@ const benchmarkShift = (n, runs = 10) => {
     for (let i = 0; i < n; i++) {
       buffer.shift();
     }
-  }, runs);
+  });
   
   return time;
 }
 
-const operationsCounts = [100, 1000, 10000, 100000];
-const runsPerTest = 10;
+const operationsCounts = [10, 1000, 10000, 100000];
 
 console.log('=== Производительность RingBuffer ===\n');
 console.log('Кол-во операций | unshift (мс) | shift (мс)');
 console.log('----------------------------------------');
 
 for (const n of operationsCounts) {
-  const timeUnshift = benchmarkUnshift(n, runsPerTest);
-  const timeShift = benchmarkShift(n, runsPerTest);
+  const timeUnshift = benchmarkUnshift(n);
+  const timeShift = benchmarkShift(n);
   console.log(`${String(n)} | ${timeUnshift} | ${timeShift}`);
 }
