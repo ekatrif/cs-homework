@@ -1,0 +1,85 @@
+class EncodeDecode {
+  constructor(endian = 'little') {
+    this.littleEndian = endian === 'little';
+  }
+
+  encode(arr) {
+    const encoder = new TextEncoder();
+    const arrLength = arr?.length;
+    const encodedStrings = arr.map(str => encoder.encode(str));
+    const strLengths = encodedStrings.reduce((acc, str) => {
+      const strLength = str.length;
+      return acc + strLength;
+    }, 0)
+
+    const bufferSize = 4 + arrLength * 4 + strLengths;
+    const buffer = new ArrayBuffer(bufferSize);
+    const view = new DataView(buffer);
+
+    view.setUint32(0, arrLength, this.littleEndian);
+
+    let offset = 4;
+
+    encodedStrings.forEach((str) => {
+      view.setUint32(offset, str.length, this.littleEndian);
+      offset += 4;
+
+      str.forEach(byte => {
+        view.setUint8(offset, byte, this.littleEndian);
+        offset ++;
+      })
+    })
+
+    const atFunc = (index) => {
+      if (!buffer) return undefined;
+
+      const decodedArr = this.decode(buffer)
+      if (index < 0 || index >= decodedArr.length) {
+        return '';
+      }
+      return decodedArr[index];
+    }
+
+    return {
+      buffer,
+      at: atFunc
+    };
+  }
+
+  decode(buffer) {
+    const view = new DataView(buffer);
+
+    const size = view.getUint32(0, this.littleEndian);
+    const result = new Array(size).fill('');
+
+    let offset = 4;
+
+    const bytes = new Uint8Array(buffer);
+
+    for (let i = 0; i < size; i ++) {
+      const strSize = new DataView(bytes.slice(offset, offset + 4).buffer).getUint32(0, this.littleEndian);
+      if (strSize === 0) {
+        result[i] = '';
+        break;
+      }
+      offset += 4;
+
+      const str = bytes.slice(offset, offset + strSize);
+      offset += strSize;
+      
+      const decoder = new TextDecoder();
+      const decodedStr = decoder.decode(str);
+      result[i] = decodedStr;
+    }
+
+    return result;
+  }
+}
+
+const strings = ["hello", "мир", ""]; // 4 + 4 * 3 + 11 = 27 buffer size
+
+const buffer = new EncodeDecode().encode(strings);
+const decodedStrings = new EncodeDecode().decode(buffer.buffer);
+console.log(buffer);
+console.log(decodedStrings);
+console.log(buffer.at(1))
