@@ -20,9 +20,17 @@ class EncodeDecode {
 
     let offset = 4;
 
-    encodedStrings.forEach((str) => {
+    const indexes = new Map();
+
+    encodedStrings.forEach((str, idx) => {
       view.setUint32(offset, str.length, this.littleEndian);
       offset += 4;
+
+      if (!str.length) {
+        return;
+      }
+
+      indexes.set(idx, [offset, offset + str.length]); // start & end of string
 
       str.forEach(byte => {
         view.setUint8(offset, byte, this.littleEndian);
@@ -33,11 +41,15 @@ class EncodeDecode {
     const atFunc = (index) => {
       if (!buffer) return undefined;
 
-      const decodedArr = this.decode(buffer)
-      if (index < 0 || index >= decodedArr.length) {
+      if (!indexes.get(index)) {
         return '';
       }
-      return decodedArr[index];
+
+      const [start, end] = indexes.get(index);
+      const slice = new Uint8Array(buffer).slice(start, end);
+
+      const decoder = new TextDecoder();
+      return decoder.decode(slice);
     }
 
     return {
@@ -80,6 +92,6 @@ const strings = ["hello", "мир", ""]; // 4 + 4 * 3 + 11 = 27 buffer size
 
 const buffer = new EncodeDecode().encode(strings);
 const decodedStrings = new EncodeDecode().decode(buffer.buffer);
-console.log(buffer);
-console.log(decodedStrings);
+// console.log(buffer);
+// console.log(decodedStrings);
 console.log(buffer.at(1))
