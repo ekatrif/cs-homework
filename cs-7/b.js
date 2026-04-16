@@ -55,7 +55,7 @@ export class EncodeDecodeIndexed {
 
       let result = '';
 
-      arr.forEach((byte, byteIdx) => {
+      arr.forEach(byte => {
         if (currentByte <= 4) {
           currentStrLength[currentByte - 1] = byte;
         }
