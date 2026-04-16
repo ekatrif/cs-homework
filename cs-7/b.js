@@ -1,4 +1,4 @@
-class EncodeDecodeIndexed {
+export class EncodeDecodeIndexed {
   constructor(endian = 'little') {
     this.littleEndian = endian === 'little';
   }
@@ -46,7 +46,6 @@ class EncodeDecodeIndexed {
       if (!buffer) return undefined;
 
       const arr = new Uint8Array(buffer);
-      console.log(buffer)
 
       let currentByte = 1;
       let strIndex = 0;
@@ -82,8 +81,7 @@ class EncodeDecodeIndexed {
 
         const lastEntry = Array.from(map)[map.size - 1];
         if (lastEntry && arr.length === lastEntry[1][0]) { // Прочитаны все длины строк и указатели
-          // start read strings
-          console.log('start read strings, current map: ', map)
+          // start read string
           if (!map.get(index)) return;
           const [start, length] = map.get(index);
           const slice = new Uint8Array(buffer).slice(start, start + length);
@@ -107,5 +105,4 @@ const strings = ["hello", "мир", ""]; // 3 * 8 + 5 + 6 = 35;
 
 const buffer = new EncodeDecodeIndexed().encode(strings);
 // console.log(buffer);
-// console.log(decodedStrings);
-console.log(buffer.at(1))
+// console.log(buffer.at(1))

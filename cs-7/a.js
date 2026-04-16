@@ -1,4 +1,4 @@
-class EncodeDecode {
+export class EncodeDecode {
   constructor(endian = 'little') {
     this.littleEndian = endian === 'little';
   }
@@ -94,4 +94,4 @@ const buffer = new EncodeDecode().encode(strings);
 const decodedStrings = new EncodeDecode().decode(buffer.buffer);
 // console.log(buffer);
 // console.log(decodedStrings);
-console.log(buffer.at(1))
+// console.log(buffer.at(1))
