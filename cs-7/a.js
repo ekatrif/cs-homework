@@ -12,15 +12,15 @@ export class EncodeDecode {
       return acc + strLength;
     }, 0)
 
-    const bufferSize = 4 + arrLength * 4 + strLengths;
+    const bufferSize = 4 + arrLength * 4 + strLengths; // число строк + длина каждой строки + сами строки
     const buffer = new ArrayBuffer(bufferSize);
     const view = new DataView(buffer);
 
-    view.setUint32(0, arrLength, this.littleEndian);
+    view.setUint32(0, arrLength, this.littleEndian); // запись количества строк
 
     let offset = 4;
 
-    const indexes = new Map();
+    const indexes = new Map(); // индекс строки => [начало строки, конец строки]
 
     encodedStrings.forEach((str, idx) => {
       view.setUint32(offset, str.length, this.littleEndian);
@@ -30,7 +30,7 @@ export class EncodeDecode {
         return;
       }
 
-      indexes.set(idx, [offset, offset + str.length]); // start & end of string
+      indexes.set(idx, [offset, offset + str.length]);
 
       str.forEach(byte => {
         view.setUint8(offset, byte, this.littleEndian);
@@ -46,7 +46,7 @@ export class EncodeDecode {
       }
 
       const [start, end] = indexes.get(index);
-      const slice = new Uint8Array(buffer).slice(start, end);
+      const slice = new Uint8Array(buffer).subarray(start, end); // subarray() не копирует данные, а создаёт представление (view) над той же памятью
 
       const decoder = new TextDecoder();
       return decoder.decode(slice);
