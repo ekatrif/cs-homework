@@ -72,7 +72,7 @@ export class EncodeDecode {
       const strSize = new DataView(bytes.slice(offset, offset + 4).buffer).getUint32(0, this.littleEndian);
       if (strSize === 0) {
         result[i] = '';
-        break;
+        continue;
       }
       offset += 4;
 

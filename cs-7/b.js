@@ -8,7 +8,7 @@ export class EncodeDecodeIndexed {
     const arrLength = arr?.length; // число строк
     const encodedStrings = arr.map(str => encoder.encode(str));
     const strLengths = encodedStrings.reduce((acc, str) => {
-    const strLength = str.length;
+      const strLength = str.length;
       return acc + strLength;
     }, 0)
 
@@ -19,14 +19,14 @@ export class EncodeDecodeIndexed {
     let offset = 0;
 
     let startIndex = arrLength * 8; // Индекс, начиная с которого записываются строки друг-за-другом
-    const pointers = new Map(); // индекс строки => указатель на строку
+    const pointers = new Map(); // индекс строки => [начало строки, конец строки]
     encodedStrings.forEach((str, index) => {
-      pointers.set(index, startIndex);
+      pointers.set(index, [startIndex, startIndex + str.length]);
       startIndex += str.length;
     })
 
     encodedStrings.forEach((str, index) => {
-      const start = pointers.get(index);
+      const [start, end] = pointers.get(index);
       view.setUint32(offset, str.length, this.littleEndian); // длина строки
       offset += 4;
 
@@ -36,7 +36,6 @@ export class EncodeDecodeIndexed {
       let byteOffset = 0;
 
       str.forEach(byte => {
-        if (!str.length) return;
         view.setUint8(start + byteOffset, byte, this.littleEndian);
         byteOffset ++;
       })
@@ -44,12 +43,11 @@ export class EncodeDecodeIndexed {
 
     const atFunc = (index) => {
       if (!buffer) return undefined;
+      if (!pointers.get(index)) return '';
 
-      const pointer = pointers.get(index); // Указатель на строку
+      const [start, end] = pointers.get(index);
 
-      if (!pointer) return '';
-
-      const slice = new Uint8Array(buffer).subarray(pointer, pointer + encodedStrings[index].length);
+      const slice = new Uint8Array(buffer).subarray(start, end);
 
       const decoder = new TextDecoder();
       return decoder.decode(slice);
@@ -66,4 +64,4 @@ const strings = ["hello", "мир", ""]; // 3 * 8 + 5 + 6 = 35;
 
 const buffer = new EncodeDecodeIndexed().encode(strings);
 console.log(buffer);
-console.log(buffer.at(1))
+console.log(buffer.at(-1))
