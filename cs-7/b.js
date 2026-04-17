@@ -5,7 +5,7 @@ export class EncodeDecodeIndexed {
 
   encode(arr) {
     const encoder = new TextEncoder();
-    const arrLength = arr?.length;
+    const arrLength = arr?.length; // число строк
     const encodedStrings = arr.map(str => encoder.encode(str));
     const strLengths = encodedStrings.reduce((acc, str) => {
     const strLength = str.length;
@@ -18,15 +18,15 @@ export class EncodeDecodeIndexed {
 
     let offset = 0;
 
-    let startIndex = arrLength * 8;
-    const startIndexes = new Map();
+    let startIndex = arrLength * 8; // Индекс, начиная с которого записываются строки друг-за-другом
+    const pointers = new Map(); // индекс строки => указатель на строку
     encodedStrings.forEach((str, index) => {
-      startIndexes.set(index, startIndex);
+      pointers.set(index, startIndex);
       startIndex += str.length;
     })
 
     encodedStrings.forEach((str, index) => {
-      const start = startIndexes.get(index);
+      const start = pointers.get(index);
       view.setUint32(offset, str.length, this.littleEndian); // длина строки
       offset += 4;
 
@@ -45,53 +45,14 @@ export class EncodeDecodeIndexed {
     const atFunc = (index) => {
       if (!buffer) return undefined;
 
-      const arr = new Uint8Array(buffer);
+      const pointer = pointers.get(index); // Указатель на строку
 
-      let currentByte = 1;
-      let strIndex = 0;
-      let currentStrLength = new Uint8Array(4);
-      let currentStart = new Uint8Array(4);
-      const map = new Map(); // index => [указатель, длина]
+      if (!pointer) return '';
 
-      let result = '';
+      const slice = new Uint8Array(buffer).subarray(pointer, pointer + encodedStrings[index].length);
 
-      arr.forEach(byte => {
-        if (currentByte <= 4) {
-          currentStrLength[currentByte - 1] = byte;
-        }
-
-        if (currentByte > 4 && currentByte <= 8) {
-          currentStart[currentByte - 4 - 1] = byte;
-        }
-
-        if (currentByte === 8) {
-          const viewStrLength = new DataView(currentStrLength.buffer);
-          const decodedStrLength = viewStrLength.getUint32(0, this.littleEndian);
-          const viewStart = new DataView(currentStart.buffer);
-          const decodedStart = viewStart.getUint32(0, this.littleEndian);
-
-          map.set(strIndex, [decodedStart, decodedStrLength]);
-
-          currentStrLength = new Uint8Array(4);
-          currentStart = new Uint8Array(4);
-          currentByte = 0;
-          strIndex ++;
-        }
-        currentByte ++;
-
-        const lastEntry = Array.from(map)[map.size - 1];
-        if (lastEntry && arr.length === lastEntry[1][0]) { // Прочитаны все длины строк и указатели
-          // start read string
-          if (!map.get(index)) return;
-          const [start, length] = map.get(index);
-          const slice = new Uint8Array(buffer).slice(start, start + length);
-
-          const decoder = new TextDecoder();
-          result = decoder.decode(slice);
-        } 
-      })
-
-      return result;
+      const decoder = new TextDecoder();
+      return decoder.decode(slice);
     }
 
     return {
@@ -104,5 +65,5 @@ export class EncodeDecodeIndexed {
 const strings = ["hello", "мир", ""]; // 3 * 8 + 5 + 6 = 35;
 
 const buffer = new EncodeDecodeIndexed().encode(strings);
-// console.log(buffer);
-// console.log(buffer.at(1))
+console.log(buffer);
+console.log(buffer.at(1))
