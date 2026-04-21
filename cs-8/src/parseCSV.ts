@@ -75,7 +75,7 @@ const callback = (error: Error | null, data: string[][]) => {
   } else {
     const __filename = fileURLToPath(import.meta.url);
     const __dirname = path.dirname(__filename);
-    const pathToOutputFile = path.join(__dirname, "../output/output.txt");
+    const pathToOutputFile = path.join(__dirname, "../output/outputCSV.txt");
     writeToFile(pathToOutputFile, data);
   }
 }
@@ -83,6 +83,5 @@ const callback = (error: Error | null, data: string[][]) => {
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const pathToCSV = path.join(__dirname, "../input/10mb.csv");
-console.log({pathToCSV})
 
 parseCSV(pathToCSV, ',', callback);
