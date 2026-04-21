@@ -1,0 +1,10 @@
+{
+  "name": "hw-8",
+  "type": "module",
+  "scripts": {
+    "start": "tsx src/parseCSV.ts"
+  },
+  "devDependencies": {
+    "tsx": "^4.21.0"
+  }
+}
