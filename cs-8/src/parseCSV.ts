@@ -126,6 +126,6 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const inputPath = path.join(__dirname, "../input/10mb.csv");
-const outputPath = path.join(__dirname, "../output/output_stream.txt");
+const outputPath = path.join(__dirname, "../output/outputCSV.txt");
 
 parseCSV(inputPath, outputPath, ",");
