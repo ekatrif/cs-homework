@@ -1,7 +1,7 @@
 import { EncodeDecode } from './a.js';
-import { EncodeDecodeIndexed } from './b.js';
+import { EncodeDecodeByIndex } from './b.js';
 
-const strings = Array.from({ length: 10000 }, (_, i) => String(i));
+const strings = Array.from({ length: 10_000_000 }, (_, i) => String(i));
 
 const measureTime = (fn) => {
   const start = performance.now();
@@ -10,6 +10,9 @@ const measureTime = (fn) => {
   return (end - start);
 }
 
-console.log('time for "a" realization: ', measureTime(() => new EncodeDecode().encode(strings).at(1000)))
-console.log('time for "b" realization: ', measureTime(() => new EncodeDecodeIndexed().encode(strings).at(1000)))
+const buffer = new EncodeDecode().encode(strings);
+const buffer2 = new EncodeDecodeByIndex().encode(strings);
+
+// console.log('time for "a" realization: ', measureTime(() => buffer.at(10_000_000)))
+console.log('time for "b" realization: ', measureTime(() => buffer2.at(10_000_000)))
 

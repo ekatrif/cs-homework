@@ -20,8 +20,6 @@ export class EncodeDecode {
 
     let offset = 4;
 
-    const indexes = new Map(); // индекс строки => [начало строки, конец строки]
-
     encodedStrings.forEach((str, idx) => {
       view.setUint32(offset, str.length, this.littleEndian);
       offset += 4;
@@ -30,32 +28,43 @@ export class EncodeDecode {
         return;
       }
 
-      indexes.set(idx, [offset, offset + str.length]);
-
       str.forEach(byte => {
         view.setUint8(offset, byte, this.littleEndian);
         offset ++;
       })
     })
 
-    const atFunc = (index) => {
-      if (!buffer) return undefined;
-
-      if (!indexes.get(index)) {
-        return '';
+    buffer.at = function(index) {
+      if (index === -1) {
+        return ''
       }
 
-      const [start, end] = indexes.get(index);
-      const slice = new Uint8Array(buffer).subarray(start, end); // subarray() не копирует данные, а создаёт представление (view) над той же памятью
+      const buffer = this;
+      const view = new DataView(buffer);
 
-      const decoder = new TextDecoder();
-      return decoder.decode(slice);
+      let currentIndex = 0;
+      let offset = 0; // сколько байтов пропустить до следующей строки
+
+      for (let i = 4; i < buffer.byteLength; i++) {
+        if (offset > 0) { // пропустить байты до байта с длиной следующей строки
+          offset --;
+          continue;
+        };
+
+        const stringLength = view.getUint8(i); // прочитать длину строки
+
+        if (currentIndex === index) {
+          const slice = new Uint8Array(buffer).subarray(i + 4, i + 4 + stringLength);
+          const decoder = new TextDecoder();
+          return decoder.decode(slice);
+        }
+
+        offset = 4 + stringLength - 1;
+        currentIndex ++;
+      }
     }
 
-    return {
-      buffer,
-      at: atFunc
-    };
+    return buffer;
   }
 
   decode(buffer) {
@@ -88,10 +97,12 @@ export class EncodeDecode {
   }
 }
 
-const strings = ["hello", "мир", ""]; // 4 + 4 * 3 + 11 = 27 buffer size
+const strings = ["hello", "мир", "", 'I', 'love', 'CS']; // 4 + 4 * 3 + 11 = 27 buffer size
 
 const buffer = new EncodeDecode().encode(strings);
-const decodedStrings = new EncodeDecode().decode(buffer.buffer);
-// console.log(buffer);
+// const decodedStrings = new EncodeDecode().decode(buffer.buffer);
+console.log(buffer);
 // console.log(decodedStrings);
-// console.log(buffer.at(1))
+// console.log(buffer.at(3))
+// console.log(buffer.at(4))
+// console.log(buffer.at(5))

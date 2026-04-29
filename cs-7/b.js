@@ -1,4 +1,4 @@
-export class EncodeDecodeIndexed {
+export class EncodeDecodeByIndex {
   constructor(endian = 'little') {
     this.littleEndian = endian === 'little';
   }
@@ -19,14 +19,14 @@ export class EncodeDecodeIndexed {
     let offset = 0;
 
     let startIndex = arrLength * 8; // Индекс, начиная с которого записываются строки друг-за-другом
-    const pointers = new Map(); // индекс строки => [начало строки, конец строки]
+    const pointers = new Map(); // индекс строки => начало строки
     encodedStrings.forEach((str, index) => {
-      pointers.set(index, [startIndex, startIndex + str.length]);
+      pointers.set(index, startIndex);
       startIndex += str.length;
     })
 
     encodedStrings.forEach((str, index) => {
-      const [start, end] = pointers.get(index);
+      const start = pointers.get(index);
       view.setUint32(offset, str.length, this.littleEndian); // длина строки
       offset += 4;
 
@@ -53,15 +53,31 @@ export class EncodeDecodeIndexed {
       return decoder.decode(slice);
     }
 
-    return {
-      buffer,
-      at: atFunc,
-    };
+    buffer.at = function(index) {
+      if (index === -1) {
+        return ''
+      }
+
+      const buffer = this;
+      const view = new DataView(buffer);
+
+      const stringLength = view.getUint8(index * 8); // прочитать длину строки по индексу
+      const pointer = view.getUint8(index * 8 + 4);
+
+      const slice = new Uint8Array(buffer).subarray(pointer, pointer + stringLength);
+      const decoder = new TextDecoder();
+      return decoder.decode(slice);
+
+    }
+
+    return buffer;
   }
 }
 
-const strings = ["hello", "мир", ""]; // 3 * 8 + 5 + 6 = 35;
+const strings = ["hello", "мир", "", 'I', 'love', 'CS']; // 3 * 8 + 5 + 6 = 35;
 
-const buffer = new EncodeDecodeIndexed().encode(strings);
-console.log(buffer);
-console.log(buffer.at(-1))
+const buffer = new EncodeDecodeByIndex().encode(strings);
+// console.log(buffer);
+// console.log(buffer.at(3))
+// console.log(buffer.at(4))
+// console.log(buffer.at(5))
