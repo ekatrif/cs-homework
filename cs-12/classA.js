@@ -59,7 +59,7 @@ class Pointer {
 
   // RAII
   [Symbol.dispose]() {
-    console.log('Ресурс освобождён');
+    console.log('Ресурс освобождён', this.id);
     this.free();
   }
 }
@@ -223,7 +223,7 @@ const arrayBuffer = encoder.encode("It works fine").buffer;
 
 // Запрашиваем 128 байт в куче
 // Возвращает указатель на первый байт выделенной области
- {using pointer1 = mem.alloc(128);
+using pointer1 = mem.alloc(128);
 
 // Записываем данные в выделенную область
 pointer1.change(arrayBuffer);
@@ -232,4 +232,9 @@ pointer1.change(arrayBuffer);
 using pointer2 = mem.alloc(8);
 using pointer3 = mem.alloc(4);
 using pointer4 = mem.alloc(5 * 1024); // 5 КБ
- }
+
+// Указатели очищаются в обратном порядке (т.к. LIFO)
+// Ресурс освобождён 3
+// Ресурс освобождён 2
+// Ресурс освобождён 1
+// Ресурс освобождён 0
