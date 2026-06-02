@@ -20,8 +20,12 @@ function getIndex(arr: number[] | ObjectType[], target: number, searchType: Sear
     const mid = left + Math.floor((right - left) / 2);
     const current = searchInArrayOfNumbers(arr) ? arr[mid] : keyFunc?.(arr[mid]);
 
-    if (current === undefined) {
+    if (keyFunc === undefined) {
       throw new Error('keyFunc is undefined');
+    }
+
+    if (current === undefined) {
+      throw new Error('incorrect object type');
     }
 
     if (current === target) {
