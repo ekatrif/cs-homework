@@ -25,7 +25,7 @@ function getIndex(arr: number[] | ObjectType[], target: number, searchType: Sear
     }
 
     if (current === undefined) {
-      throw new Error('incorrect object type');
+      throw new Error('invalid object type');
     }
 
     if (current === target) {
