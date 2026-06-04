@@ -1,30 +1,3 @@
-// For best visualisation
-function formatMatrix(uint8Array, size) {
-    let maxWidth = 1;
-    for (let i = 0; i < uint8Array.length; i++) {
-        const num = uint8Array[i];
-        const width = String(num).length;
-        if (width > maxWidth) maxWidth = width;
-    }
-    
-    let result = '';
-    for (let i = 0; i < size; i++) {
-        const start = i * size;
-        
-        let row = '';
-        for (let j = 0; j < size; j++) {
-            const value = uint8Array[start + j];
-            const formatted = String(value).padStart(maxWidth, ' ');
-            row += formatted;
-            if (j < size - 1) row += '  ';
-        }
-        
-        result += row + '\n';
-    }
-    
-    return result;
-}
-
 class Matrix {
   constructor(TypedArray, rows, cols) {
     this.rows = rows;
@@ -139,24 +112,52 @@ class Graph {
   }
 }
 
-// const matrix = new Matrix(Uint8Array, 10, 10);
-// matrix.set(0, 2, 10);
-// matrix.set(3, 3, 13);
-// matrix.set(5, 6, 18);
-// matrix.set(7, 3, 25);
-// matrix.set(9, 8, 50);
-// console.log(formatMatrix(matrix.data, 10));
+// For best visualisation
+function formatMatrix(uint8Array, size) {
+    let maxWidth = 1;
+    for (let i = 0; i < uint8Array.length; i++) {
+        const num = uint8Array[i];
+        const width = String(num).length;
+        if (width > maxWidth) maxWidth = width;
+    }
+    
+    let result = '';
+    for (let i = 0; i < size; i++) {
+        const start = i * size;
+        
+        let row = '';
+        for (let j = 0; j < size; j++) {
+            const value = uint8Array[start + j];
+            const formatted = String(value).padStart(maxWidth, ' ');
+            row += formatted;
+            if (j < size - 1) row += '  ';
+        }
+        
+        result += row + '\n';
+    }
+    
+    return result;
+}
 
-// const graph = new Graph(matrix, { directed: false });
-// console.log(graph.hasEdge(0, 2));
-// console.log(graph.hasArc(2, 0));
+// Checks
+const matrix = new Matrix(Uint8Array, 10, 10);
+matrix.set(0, 2, 10);
+matrix.set(3, 3, 13);
+matrix.set(5, 6, 18);
+matrix.set(7, 3, 25);
+matrix.set(9, 8, 50);
+console.log(formatMatrix(matrix.data, 10));
 
-// graph.addEdge(7, 2, 77);
-// graph.removeEdge(7, 2);
-// console.log(formatMatrix(matrix.data, 10));
+const graph = new Graph(matrix, { directed: false });
+console.log(graph.hasEdge(0, 2));
+console.log(graph.hasArc(2, 0));
 
-// const graphOriented = new Graph(matrix, { directed: true });
-// graphOriented.addArc(7, 2, 78);
-// graphOriented.removeArc(7, 2);
-// console.log(formatMatrix(matrix.data, 10));
+graph.addEdge(7, 2, 77);
+graph.removeEdge(7, 2);
+console.log(formatMatrix(matrix.data, 10));
+
+const graphOriented = new Graph(matrix, { directed: true });
+graphOriented.addArc(7, 2, 78);
+graphOriented.removeArc(7, 2);
+console.log(formatMatrix(matrix.data, 10));
 
