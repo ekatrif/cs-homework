@@ -110,6 +110,52 @@ class Graph {
 
     this.matrix.set(from, to, 0);
   }
+
+  traverse(start, cb) {
+    this.#checkVertex(start);
+
+    const visited = new Set();
+    const queue = [
+      {
+        id: start,
+        depth: 0,
+        weight: 0,
+      },
+    ];
+
+    visited.add(start);
+
+    while (queue.length > 0) {
+      const node = queue.shift();
+
+      cb(
+        {
+          id: node.id,
+          weight: node.weight,
+        },
+        node.depth
+      );
+
+      for (let neighbor = 0; neighbor < this.matrix.cols; neighbor++) {
+        const weight = this.matrix.get(
+          node.id,
+          neighbor
+        );
+
+        if (weight === 0 || visited.has(neighbor)) {
+          continue;
+        }
+
+        visited.add(neighbor);
+
+        queue.push({
+          id: neighbor,
+          depth: node.depth + 1,
+          weight,
+        });
+      }
+    }
+  }
 }
 
 // For best visualisation
@@ -141,23 +187,48 @@ function formatMatrix(uint8Array, size) {
 
 // Checks
 const matrix = new Matrix(Uint8Array, 10, 10);
-matrix.set(0, 2, 10);
-matrix.set(3, 3, 13);
-matrix.set(5, 6, 18);
-matrix.set(7, 3, 25);
-matrix.set(9, 8, 50);
+// matrix.set(0, 2, 10);
+// matrix.set(3, 3, 13);
+// matrix.set(5, 6, 18);
+// matrix.set(7, 3, 25);
+// matrix.set(9, 8, 50);
+// console.log(formatMatrix(matrix.data, 10));
+
+// const graph = new Graph(matrix, { directed: false });
+// console.log(graph.hasEdge(0, 2));
+// console.log(graph.hasArc(2, 0));
+
+// graph.addEdge(7, 2, 77);
+// graph.removeEdge(7, 2);
+// console.log(formatMatrix(matrix.data, 10));
+
+// const graphOriented = new Graph(matrix, { directed: true });
+// graphOriented.addArc(7, 2, 78);
+// graphOriented.removeArc(7, 2);
+// console.log(formatMatrix(matrix.data, 10));
+
+const graph = new Graph(matrix);
+
+graph.addEdge(0, 1, 2);
+graph.addEdge(0, 2, 3);
+graph.addEdge(1, 3, 4);
+graph.addEdge(1, 4, 5);
+graph.addEdge(2, 5, 6);
+graph.addEdge(2, 6, 7);
+graph.addEdge(4, 7, 8);
+graph.addEdge(5, 8, 9);
+graph.addEdge(6, 9, 10);
 console.log(formatMatrix(matrix.data, 10));
 
-const graph = new Graph(matrix, { directed: false });
-console.log(graph.hasEdge(0, 2));
-console.log(graph.hasArc(2, 0));
+  //         0
+  //       /   \
+  //     1       2
+  //   /  \    /   \
+  //  3    4  5     6
+  //       |  |     |
+  //       7  8     9
 
-graph.addEdge(7, 2, 77);
-graph.removeEdge(7, 2);
-console.log(formatMatrix(matrix.data, 10));
-
-const graphOriented = new Graph(matrix, { directed: true });
-graphOriented.addArc(7, 2, 78);
-graphOriented.removeArc(7, 2);
-console.log(formatMatrix(matrix.data, 10));
+graph.traverse(1, (node, depth) => {
+    console.log(`Узел: ${node.id}, глубина: ${depth}, вес ребра: ${node.weight}`);
+});
 
